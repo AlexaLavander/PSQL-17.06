@@ -68,12 +68,12 @@ insert into album values(4, 'Godzila', 2005);
 insert into album values(5, 'Party Hits', 2009);
 
 
-insert into song values(1, 'It smells like teen spirit', 5.00, 1);
-insert into song values(2, 'Come as you are', 3.38, 1);
-insert into song values(3, 'Saving sid', 1.00, 2);
-insert into song values(4, 'Люби', 3.07, 3);
-insert into song values(5, 'Godzila', 4.10, 4);
-insert into song values(6, 'Smack That', 4.00, 5);
+insert into song values(1, 'It smells like teen spirit', 5.00*60, 1);
+insert into song values(2, 'Come as you are', 3.38*60, 1);
+insert into song values(3, 'Saving sid', 1.00*60, 2);
+insert into song values(4, 'Люби', 3.07*60, 3);
+insert into song values(5, 'Godzila', 4.10*60, 4);
+insert into song values(6, 'Smack That', 4.00*60, 5);
 
 
 insert into compilation values(1, 'Alternate nineteens', '2019');
@@ -103,8 +103,8 @@ select duration, name from song
 where (duration = (select max(duration) from song))
 
 
-select duration, name from song
-where duration >= 3.5
+select name from song
+where song.duration >= 3.5*60
 
 select name from compilation 
 where year>=2018 and not (year>2020);
@@ -113,17 +113,21 @@ select nickname from singer
 where nickname not like '% %';
 
 select name from song
-where (name like '%my%') or (name like '%мой%');
+where (name like '% my %') or (name like '% мой %')
+or (name like '%my %') or (name like '%мой %')
+or (name like '% my%') or (name like '% мой%')
+or (name like 'my') or (name like 'мой')
+;
 
 select genre.name, count(*) as amount FROM genre
 join genresinger on genre.id = genresinger.genreid 
 group by genre.name
 ;
 
-
-select album.name, count(*) as amount from album
+select count(song) as amount from album
 inner join song on album.id = song.album 
-group by album.name;
+WHERE album.year BETWEEN 2019 and 2020
+;
 
 select album.name, avg(song.duration) as duration from album
 inner join song on album.id = song.album 
@@ -132,8 +136,8 @@ group by album.name;
 select singer.nickname  from singer
 inner join albumsinger on albumsinger.singerid = singer.id
 inner join album on album.id = albumsinger.albumid 
-where album.id = albumsinger.albumid and album.year = 2020
-group by singer.nickname
+where album.id = albumsinger.albumid and not album.year = 2020
+group by singer.nickname;
 
 
 select compilation.name from compilation
@@ -142,6 +146,4 @@ join song on compilationsong.songid = song.id
 join album on album.id = song.album 
 join albumsinger on albumsinger.albumid = album.id 
 join singer on albumsinger.singerid = singer.id 
-where singer.nickname  = 'Kurt Cobain'
-
-
+where singer.nickname  = 'Kurt Cobain';
