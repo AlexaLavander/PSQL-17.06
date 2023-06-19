@@ -134,11 +134,12 @@ inner join song on album.id = song.album
 group by album.name;
 
 select singer.nickname  from singer
+where singer.nickname not in 
+(select singer.nickname  from singer 
 inner join albumsinger on albumsinger.singerid = singer.id
 inner join album on album.id = albumsinger.albumid 
-where album.id = albumsinger.albumid and not album.year = 2020
-group by singer.nickname;
-
+where album.year = 2020)
+;
 
 select compilation.name from compilation
 join compilationsong on compilation.id = compilationsong.compilationid 
